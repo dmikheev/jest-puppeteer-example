@@ -7,5 +7,10 @@
     "test": "jest"
   },
   "author": "Dmitry Mikheev",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "jest": "^23.5.0",
+    "jest-puppeteer": "^3.3.1",
+    "puppeteer": "^1.7.0"
+  }
 }
