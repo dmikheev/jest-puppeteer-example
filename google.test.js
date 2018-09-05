@@ -23,16 +23,31 @@ describe('Google', () => {
     );
 
     it(
-        'should execute a Google "site:" search and check results domains',
+        'should execute a Google "site:" search and check result domains',
         async () => {
             const host = 'medium.com';
             await executeGoogleSearch(`site:${host} jest`);
 
-            const resultUrls = await page.$$eval(
-                '.g h3 a',
-                (resultLinks) => Array.prototype.map.call(resultLinks, (link) => link.href),
-            );
+            const resultUrls = await getResultLinkUrls();
             expect(resultUrls).toSatisfyAll((url) => new URL(url).host === host);
+        },
+    );
+
+    it(
+        'should execute a Google "filetype:" search and check result file extensions',
+        async () => {
+            const fileType = 'pdf';
+            await executeGoogleSearch(`filetype:${fileType} javascript`);
+
+            const resultUrls = await getResultLinkUrls();
+            expect(resultUrls).toSatisfyAll((url) => {
+                const extensionDotIdx = url.lastIndexOf('.');
+                if (extensionDotIdx === -1) {
+                    return false;
+                }
+
+                return url.substr(extensionDotIdx + 1) === fileType;
+            });
         },
     );
 });
@@ -45,4 +60,11 @@ async function executeGoogleSearch(query) {
         page.waitForNavigation(),
         page.$eval(QUERY_FORM_SELECTOR, (form) => form.submit()),
     ]);
+}
+
+async function getResultLinkUrls() {
+    return await page.$$eval(
+        '.g h3 a',
+        (resultLinks) => Array.prototype.map.call(resultLinks, (link) => link.href),
+    );
 }
