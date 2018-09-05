@@ -92,6 +92,15 @@ describe('Google', () => {
             await testMathOperation(a, '/', b, a / b);
         },
     );
+
+    it(
+        'should execute math calculation with "*" correctly',
+        async () => {
+            const a = randInt(1000);
+            const b = randInt(1000);
+            await testMathOperation(a, '*', b, a * b);
+        },
+    );
 });
 
 async function executeGoogleSearch(query) {
