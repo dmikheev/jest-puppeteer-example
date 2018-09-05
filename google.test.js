@@ -3,6 +3,9 @@ const { URL } = require('url');
 const QUERY_INPUT_SELECTOR = 'input[name="q"]';
 const QUERY_FORM_SELECTOR = 'form[name="f"]';
 const SEARCH_RESULTS_SELECTOR = '.g';
+const SEARCH_RESULT_LINKS_SELECTOR = '.g h3 a';
+const CALC_RESULT_SELECTOR = '#cwos';
+const CALC_RESULT_CHECK_PRECISION = 8;
 
 describe('Google', () => {
     beforeAll(async () => {
@@ -61,6 +64,18 @@ describe('Google', () => {
             expect(resultUrls).toSatisfyAll((url) => url.toLowerCase().indexOf(inUrlQuery.toLowerCase()) !== -1);
         },
     );
+
+    it(
+        'should execute math calculation with "+" correctly',
+        async () => {
+            const a = randInt(1000);
+            const b = randInt(1000);
+            await executeGoogleSearch(`${a} + ${b}`);
+
+            const result = Number(await page.$eval(CALC_RESULT_SELECTOR, (el) => el.innerText));
+            expect(result).toBeCloseTo(a + b, CALC_RESULT_CHECK_PRECISION);
+        },
+    );
 });
 
 async function executeGoogleSearch(query) {
@@ -75,7 +90,11 @@ async function executeGoogleSearch(query) {
 
 async function getResultLinkUrls() {
     return await page.$$eval(
-        '.g h3 a',
+        SEARCH_RESULT_LINKS_SELECTOR,
         (resultLinks) => Array.prototype.map.call(resultLinks, (link) => link.href),
     );
+}
+
+function randInt(max) {
+    return Math.floor(Math.random() * max);
 }
