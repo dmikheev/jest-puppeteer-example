@@ -1,3 +1,5 @@
+const { URL } = require('url');
+
 const QUERY_INPUT_SELECTOR = 'input[name="q"]';
 const QUERY_FORM_SELECTOR = 'form[name="f"]';
 const SEARCH_RESULTS_SELECTOR = '.g';
@@ -17,6 +19,20 @@ describe('Google', () => {
                 (resultElements) => resultElements.length,
             );
             expect(resultsCount).toBe(10);
+        },
+    );
+
+    it(
+        'should execute a Google "site:" search and check results domains',
+        async () => {
+            const host = 'medium.com';
+            await executeGoogleSearch(`site:${host} jest`);
+
+            const resultUrls = await page.$$eval(
+                '.g h3 a',
+                (resultLinks) => Array.prototype.map.call(resultLinks, (link) => link.href),
+            );
+            expect(resultUrls).toSatisfyAll((url) => new URL(url).host === host);
         },
     );
 });
