@@ -1,5 +1,7 @@
 const { URL } = require('url');
 
+const LOG_MATH_OPERATIONS = false;
+
 const QUERY_INPUT_SELECTOR = 'input[name="q"]';
 const QUERY_FORM_SELECTOR = 'form[name="f"]';
 const SEARCH_RESULTS_SELECTOR = '.g';
@@ -101,6 +103,15 @@ describe('Google', () => {
             await testMathOperation(a, '*', b, a * b);
         },
     );
+
+    it(
+        'should execute math calculation with "% of" correctly',
+        async () => {
+            const a = randInt(100);
+            const b = randInt(1000);
+            await testMathOperation(a, '% of', b, b / 100 * a);
+        },
+    );
 });
 
 async function executeGoogleSearch(query) {
@@ -122,11 +133,15 @@ async function getResultLinkUrls() {
 
 async function testMathOperation(num1, operator, num2, result) {
     const query = `${num1} ${operator} ${num2}`;
-    console.log(query);
     await executeGoogleSearch(query);
 
     const googleResult = Number(await page.$eval(CALC_RESULT_SELECTOR, (el) => el.innerText));
-    console.log(googleResult);
+
+    if (LOG_MATH_OPERATIONS) {
+        console.log(query);
+        console.log(googleResult);
+    }
+
     expect(googleResult).toBeCloseTo(result, CALC_RESULT_CHECK_PRECISION);
 }
 
