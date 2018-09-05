@@ -50,6 +50,17 @@ describe('Google', () => {
             });
         },
     );
+
+    it(
+        'should execute a Google "inurl:" search and check result urls for given query',
+        async () => {
+            const inUrlQuery = 'article';
+            await executeGoogleSearch(`inurl:${inUrlQuery} javascript`);
+
+            const resultUrls = await getResultLinkUrls();
+            expect(resultUrls).toSatisfyAll((url) => url.toLowerCase().indexOf(inUrlQuery.toLowerCase()) !== -1);
+        },
+    );
 });
 
 async function executeGoogleSearch(query) {
