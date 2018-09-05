@@ -70,10 +70,16 @@ describe('Google', () => {
         async () => {
             const a = randInt(1000);
             const b = randInt(1000);
-            await executeGoogleSearch(`${a} + ${b}`);
+            await testMathOperation(a, '+', b, a + b);
+        },
+    );
 
-            const result = Number(await page.$eval(CALC_RESULT_SELECTOR, (el) => el.innerText));
-            expect(result).toBeCloseTo(a + b, CALC_RESULT_CHECK_PRECISION);
+    it(
+        'should execute math calculation with "-" correctly',
+        async () => {
+            const a = randInt(1000);
+            const b = randInt(1000);
+            await testMathOperation(a, '-', b, a - b);
         },
     );
 });
@@ -93,6 +99,16 @@ async function getResultLinkUrls() {
         SEARCH_RESULT_LINKS_SELECTOR,
         (resultLinks) => Array.prototype.map.call(resultLinks, (link) => link.href),
     );
+}
+
+async function testMathOperation(num1, operator, num2, result) {
+    const query = `${num1} ${operator} ${num2}`;
+    console.log(query);
+    await executeGoogleSearch(query);
+
+    const googleResult = Number(await page.$eval(CALC_RESULT_SELECTOR, (el) => el.innerText));
+    console.log(googleResult);
+    expect(googleResult).toBeCloseTo(result, CALC_RESULT_CHECK_PRECISION);
 }
 
 function randInt(max) {
