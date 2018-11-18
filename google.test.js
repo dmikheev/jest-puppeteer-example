@@ -17,7 +17,7 @@ describe('Google', () => {
     it(
         'should execute a Google search for a given query and check that the resulting page has 10 results',
         async () => {
-            await executeGoogleSearch('jest puppeteer');
+            await executeGoogleSearch('jest puppeteer examples');
 
             const resultsCount = await page.$$eval(
                 SEARCH_RESULTS_SELECTOR,

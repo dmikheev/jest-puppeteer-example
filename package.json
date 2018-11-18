@@ -9,9 +9,9 @@
   "author": "Dmitry Mikheev",
   "license": "ISC",
   "dependencies": {
-    "jest": "^23.5.0",
+    "jest": "^23.6.0",
     "jest-extended": "^0.8.1",
-    "jest-puppeteer": "^3.3.1",
-    "puppeteer": "^1.7.0"
+    "jest-puppeteer": "^3.5.1",
+    "puppeteer": "^1.10.0"
   }
 }
